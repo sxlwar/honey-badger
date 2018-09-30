@@ -2,7 +2,7 @@ import { Body, Controller, Get, Param, ParseIntPipe, Put, UseFilters, UseGuards 
 import { ApiUseTags } from '@nestjs/swagger';
 
 import { CRUDVar } from '../../shared/constant/constant';
-import { STATISTICS } from '../constant/article.constant';
+import { STATISTICS } from '../constant/constant';
 import { ArticleStatisticsDto } from '../dto/article.statistics.dto';
 import { ArticleStatisticsEntity } from '../entity/article.statistics.entity';
 import { StatisticsHttpExceptionFilter } from '../filter/article.statistics.http.exception.filter';

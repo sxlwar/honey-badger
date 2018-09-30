@@ -7,7 +7,7 @@ import { ArticleHttpExceptionFilter } from '../filter/article.http.exception.fil
 import { ArticleAvailableGuard, ArticleNotRepeatedGuard } from '../guard/article.guard';
 import { ArticleService } from '../service/article.service';
 import { CRUDVar } from '../../shared/constant/constant';
-import { ARTICLE } from '../constant/article.constant';
+import { ARTICLE } from '../constant/constant';
 import { Observable } from 'rxjs';
 
 @Controller(ARTICLE)

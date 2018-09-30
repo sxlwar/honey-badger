@@ -1,5 +1,6 @@
 import { ApiModelProperty, ApiModelPropertyOptional, ApiUseTags } from '@nestjs/swagger';
-import { ARTICLE } from '../constant/article.constant';
+
+import { ARTICLE } from '../constant/constant';
 
 @ApiUseTags(ARTICLE)
 export class ArticleDto {

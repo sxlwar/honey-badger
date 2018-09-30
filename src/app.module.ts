@@ -1,12 +1,12 @@
-import { Module, HttpModule } from '@nestjs/common';
-
-import { ArticleModule } from './article/article.module';
-import { ConfigVar } from './shared/config/config.enum';
-import { ConfigService } from './shared/config/config.service';
-import { SharedModule } from './shared/shared.module';
+import { HttpModule, Module } from '@nestjs/common';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { ArticleModule } from './article/article.module';
+import { CommentModule } from './comment/comment.module';
+import { ConfigVar } from './shared/config/config.enum';
+import { ConfigService } from './shared/config/config.service';
+import { SharedModule } from './shared/shared.module';
 
 @Module({
     imports: [
@@ -15,6 +15,7 @@ import { AppService } from './app.service';
         HttpModule.register({
             timeout: 3000,
         }),
+        CommentModule,
     ],
     controllers: [AppController],
     providers: [AppService],
