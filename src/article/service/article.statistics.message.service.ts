@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
-import { MessageService } from 'shared/service/message.service';
+import { MessageService } from '../../shared/service/message.service';
 
 @Injectable()
 export class StatisticsMessageService extends MessageService {
