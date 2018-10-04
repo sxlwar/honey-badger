@@ -3,6 +3,7 @@ import { HttpModule, Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ArticleModule } from './article/article.module';
+import { AuthModule } from './auth/auth.module';
 import { CommentModule } from './comment/comment.module';
 import { ConfigVar } from './shared/config/config.enum';
 import { ConfigService } from './shared/config/config.service';
@@ -16,6 +17,7 @@ import { SharedModule } from './shared/shared.module';
             timeout: 3000,
         }),
         CommentModule,
+        AuthModule,
     ],
     controllers: [AppController],
     providers: [AppService],

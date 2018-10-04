@@ -1,6 +1,6 @@
 import { createConnection } from 'typeorm';
 
-import { RepositoryToken } from '../shared/config/config.provider';
+import { RepositoryToken } from '../shared/config/config.enum';
 
 export const databaseProviders = [
     {

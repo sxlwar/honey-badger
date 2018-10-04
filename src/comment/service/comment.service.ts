@@ -3,7 +3,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import * as moment from 'moment';
 import { from, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { RepositoryToken } from '../../shared/config/config.provider';
+import { RepositoryToken } from '../../shared/config/config.enum';
 import { Repository } from 'typeorm';
 
 import { ConfigService } from '../../shared/config/config.service';

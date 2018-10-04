@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Param, ParseIntPipe, Post, UseFilters, Delete, Put } from '@nestjs/common';
 import { ApiUseTags } from '@nestjs/swagger';
 
-import { CRUDVar } from 'shared/constant/constant';
+import { CRUDVar } from '../../shared/constant/constant';
 
 import { COMMENT, REPLY } from '../constant/constant';
 import { CommentDto, EnjoyCommentDto, CommentDeleteDto } from '../dto/comment.dto';

@@ -5,7 +5,7 @@ export interface AddCommentResult {
     createdAt: string;
 }
 
-export interface CommentQueryResult  {
+export interface CommentQueryResult {
     comments: CommentEntity[];
     count: number;
 }

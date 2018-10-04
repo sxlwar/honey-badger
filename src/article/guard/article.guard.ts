@@ -2,7 +2,7 @@ import { CanActivate, ExecutionContext, Inject, Injectable, RequestMethod } from
 
 import { from, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { RepositoryToken } from '../../shared/config/config.provider';
+import { RepositoryToken } from '../../shared/config/config.enum';
 import { Repository } from 'typeorm';
 
 import { ArticleEntity } from '../entity/article.entity';

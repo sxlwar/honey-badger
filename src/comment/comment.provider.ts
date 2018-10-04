@@ -2,7 +2,7 @@ import { Provider } from '@nestjs/common';
 
 import { Connection } from 'typeorm';
 
-import { RepositoryToken } from '../shared/config/config.provider';
+import { RepositoryToken } from '../shared/config/config.enum';
 import { CommentEntity } from './entity/comment.entity';
 import { CommentReplyEntity } from './entity/comment.reply.entity';
 

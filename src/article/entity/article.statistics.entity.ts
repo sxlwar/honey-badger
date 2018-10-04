@@ -15,6 +15,6 @@ export class ArticleStatisticsEntity {
     @Column('int')
     stored: number = 0; // 被收藏次数
 
-    @OneToOne(_type => ArticleEntity,  article => article.statistics)
+    @OneToOne(_type => ArticleEntity, article => article.statistics)
     article: ArticleEntity;
 }

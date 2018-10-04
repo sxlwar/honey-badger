@@ -2,7 +2,7 @@ import { CanActivate, ExecutionContext, Inject, Injectable, RequestMethod } from
 
 import { Repository } from 'typeorm';
 
-import { RepositoryToken } from '../../shared/config/config.provider';
+import { RepositoryToken } from '../../shared/config/config.enum';
 import { ArticleStatisticsEntity } from '../entity/article.statistics.entity';
 
 @Injectable()

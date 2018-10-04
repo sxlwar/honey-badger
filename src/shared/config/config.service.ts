@@ -1,14 +1,10 @@
 import { Injectable } from '@nestjs/common';
+
 import { get } from 'config';
-import { ConfigVar } from './config.enum';
+import { GithubAuth, GithubAuthTest } from './config.enum';
 
 @Injectable()
 export class ConfigService {
-    /**
-     * MysqlConnectionString is made static to pass to MysqlModule.forRoot() dynamically
-     * @type {string}
-     */
-    static connectionString: string = process.env[ConfigVar.MYSQL_URI] || get(ConfigVar.MYSQL_URI);
     private devEnvironment: string = process.env.NODE_ENV ? 'production' : 'development';
 
     /**
@@ -28,5 +24,9 @@ export class ConfigService {
 
     get isDevelopment(): boolean {
         return this.devEnvironment === 'development';
+    }
+
+    get authConfig() {
+        return this.isDevelopment ? GithubAuthTest : GithubAuth;
     }
 }

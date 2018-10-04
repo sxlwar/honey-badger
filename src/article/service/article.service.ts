@@ -6,7 +6,7 @@ import { from, Observable } from 'rxjs';
 import { filter, map, mergeMap, reduce } from 'rxjs/operators';
 import { Repository } from 'typeorm';
 
-import { RepositoryToken } from '../../shared/config/config.provider';
+import { RepositoryToken } from '../../shared/config/config.enum';
 import { ConfigService } from '../../shared/config/config.service';
 import { ArticleDto, ArticleSearchDto } from '../dto/article.dto';
 import { ArticleEntity } from '../entity/article.entity';
