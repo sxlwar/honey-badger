@@ -6,7 +6,7 @@ import { AuthHttpExceptionFilter } from '../filter/auth.http.exception.filter';
 import { RedirectToGithubAuthInterceptor } from '../interceptor/github.auth.interceptor';
 import { AuthService } from '../service/auth.service';
 import { Observable } from 'rxjs';
-import { AuthEntity } from '../entity/auth.entity';
+import { UserEntity } from '../entity/auth.entity';
 
 @Controller(AUTH)
 @ApiUseTags(AUTH)
@@ -20,7 +20,7 @@ export class AuthController {
 
     @Get(GITHUB + '/code')
     @UseFilters(AuthHttpExceptionFilter)
-    githubAuthCode(@Query('code') code: string, @Query('state') state: string): Observable<AuthEntity> {
+    githubAuthCode(@Query('code') code: string, @Query('state') state: string): Observable<UserEntity> {
         return this.authService.authGithubAccount(code, state);
     }
 }

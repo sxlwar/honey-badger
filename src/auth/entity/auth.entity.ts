@@ -1,7 +1,7 @@
 import { Column, Entity, OneToMany, PrimaryColumn } from 'typeorm';
 
 @Entity()
-export class AuthEntity {
+export class UserEntity {
     @PrimaryColumn()
     id: number;
 
@@ -16,4 +16,7 @@ export class AuthEntity {
 
     @Column()
     avatar: string; // avatar url;
+
+    @Column({ default: false })
+    isAdmin: boolean;
 }

@@ -16,6 +16,9 @@ export class CommentReplyEntity {
     fromUser: string;
 
     @Column()
+    userId: number; // from user's user id;
+
+    @Column()
     toUser: string;
 
     @ManyToOne(_type => CommentEntity, comment => comment.replies)

@@ -12,6 +12,9 @@ export class CommentDto {
 
     @ApiModelProperty()
     readonly articleId: number;
+
+    @ApiModelProperty()
+    readonly userId: number;
 }
 
 @ApiUseTags(COMMENT)
@@ -21,10 +24,16 @@ export class EnjoyCommentDto {
 
     @ApiModelProperty()
     readonly enjoy: number;
+
+    @ApiModelProperty()
+    readonly userId: number;
 }
 
 @ApiUseTags(COMMENT)
 export class CommentDeleteDto {
     @ApiModelProperty()
     readonly id: number;
+
+    @ApiModelProperty()
+    readonly userId: number;
 }

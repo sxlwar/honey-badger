@@ -5,13 +5,17 @@ import { MessageService } from '../../shared/service/message.service';
 
 @Injectable()
 export class CommentMessageService extends MessageService {
-    readonly CAN_NOT_FIND_COMMENTS_MSG = 'Can not find comments.';
-    readonly ADD_COMMENT_FAIL = 'Create comment fail, please try again later.';
-
     getHttpExceptionMessage(status: number, path: string): string {
         switch (status) {
             case HttpStatus.FORBIDDEN:
                 return this.getForbiddenMessage(path);
+
+            case HttpStatus.UNAUTHORIZED:
+                return 'Please login first.';
+
+            case HttpStatus.BAD_REQUEST:
+                return 'Operation is not allowed.';
+
             default:
                 return null;
         }
@@ -21,9 +25,11 @@ export class CommentMessageService extends MessageService {
         const subPath = path.split('/').filter(item => !!item)[1];
 
         if (subPath === CRUDVar.CREATE) {
-            return this.ADD_COMMENT_FAIL;
+            return 'Create comment fail, please try again later.';
+        } else if (subPath === CRUDVar.DELETE) {
+            return 'Permission denied.';
         } else {
-            return this.CAN_NOT_FIND_COMMENTS_MSG;
+            return 'Can not find comments.';
         }
     }
 }

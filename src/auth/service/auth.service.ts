@@ -5,7 +5,7 @@ import { map, mergeMap } from 'rxjs/operators';
 import { ConfigService } from '../../shared/config/config.service';
 import { GithubUser } from '../interface/auth.interface';
 import { RepositoryToken } from '../../shared/config/config.enum';
-import { AuthEntity } from '../entity/auth.entity';
+import { UserEntity } from '../entity/auth.entity';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -16,7 +16,7 @@ export class AuthService {
     constructor(
         private readonly configService: ConfigService,
         private readonly httpService: HttpService,
-        @Inject(RepositoryToken.AuthRepositoryToken) private readonly userRepository: Repository<AuthEntity>,
+        @Inject(RepositoryToken.AuthRepositoryToken) private readonly userRepository: Repository<UserEntity>,
     ) {}
 
     /**
@@ -24,7 +24,7 @@ export class AuthService {
      * 2、通过 access_token 获取用户的 github 帐户信息，保存并返回。
      * @param code 用户同意使用github 帐号登录后返回的 code
      */
-    authGithubAccount(code: string, state: string): Observable<AuthEntity> {
+    authGithubAccount(code: string, state: string): Observable<UserEntity> {
         const config = this.configService.authConfig;
         const param = {
             client_id: config.clientId as string,
@@ -45,13 +45,30 @@ export class AuthService {
      * 使用返回的 token 获取 github 用户的详细信息
      * @param token github access_token
      */
-    private getGithubUserInfo(token: string): Observable<AuthEntity> {
+    private getGithubUserInfo(token: string): Observable<UserEntity> {
         return this.httpService.get(`${this.githubUserInfoURI}?access_token=${token}`).pipe(
             map(res => {
                 const { id, login, name, email, avatar_url } = res.data as GithubUser;
-
-                return { id, account: login, email, avatar: avatar_url, name };
+                return this.userRepository.create({
+                    id,
+                    account: login,
+                    email,
+                    avatar: avatar_url,
+                    name,
+                });
             }),
         );
+    }
+
+    private async findUser(id: number): Promise<UserEntity> {
+        return this.userRepository.findOne({ id });
+    }
+
+    async hasLogged(id: number): Promise<boolean> {
+        return this.findUser(id).then(user => !!user);
+    }
+
+    async isAdmin(id: number): Promise<boolean> {
+        return this.findUser(id).then(user => !!user && user.isAdmin);
     }
 }

@@ -10,5 +10,6 @@ import { AuthMessageService } from './service/auth.message.service';
     imports: [DatabaseModule, HttpModule],
     providers: [...authProviders, AuthService, AuthMessageService],
     controllers: [AuthController],
+    exports: [AuthService],
 })
 export class AuthModule {}

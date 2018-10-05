@@ -10,6 +10,9 @@ export class CommentEntity {
     @Column()
     username: string;
 
+    @Column()
+    userId: number;
+
     @Column({ readonly: true })
     createdAt: string;
 
