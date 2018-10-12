@@ -21,6 +21,9 @@ export class ArticleDto {
 
     @ApiModelProperty()
     readonly category: string[];
+
+    @ApiModelProperty()
+    readonly isOriginal: boolean;
 }
 
 @ApiUseTags(ARTICLE)
@@ -54,4 +57,7 @@ export class ArticleSearchDto {
 
     @ApiModelPropertyOptional()
     readonly limit: number;
+
+    @ApiModelPropertyOptional()
+    readonly isOverview: boolean;
 }

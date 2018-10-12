@@ -1,16 +1,19 @@
 export type Category = 'angular' | 'rxjs' | 'typescript' | 'css' | 'javascript' | 'other';
 
-export interface Article {
+export interface ArticleOverview {
     id: number;
     author: string;
-    createDate: string;
-    updateDate: string;
+    createdAt: string;
     title: string;
+    category: Category[];
+}
+
+export interface Article extends ArticleOverview {
+    updatedAt: string;
     subtitle: string;
     content: string;
     isPublished: boolean;
     isDeleted: boolean;
-    category: Category[];
 }
 
 export interface ArticleUpdate {

@@ -28,6 +28,9 @@ export class ArticleEntity {
     @Column()
     isPublished: boolean;
 
+    @Column()
+    isOriginal: boolean;
+
     @Column({ default: false })
     isDeleted: boolean;
 

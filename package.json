@@ -29,6 +29,7 @@
         "lodash": "^4.17.11",
         "moment": "^2.22.2",
         "mysql": "^2.16.0",
+        "qiniu": "^7.2.1",
         "reflect-metadata": "^0.1.12",
         "rxjs": "^6.2.2",
         "typeorm": "^0.2.7",

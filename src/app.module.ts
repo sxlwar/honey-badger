@@ -8,6 +8,7 @@ import { CommentModule } from './comment/comment.module';
 import { ConfigVar } from './shared/config/config.enum';
 import { ConfigService } from './shared/config/config.service';
 import { SharedModule } from './shared/shared.module';
+import { UploadModule } from './upload/upload.module';
 
 @Module({
     imports: [
@@ -18,6 +19,7 @@ import { SharedModule } from './shared/shared.module';
         }),
         CommentModule,
         AuthModule,
+        UploadModule,
     ],
     controllers: [AppController],
     providers: [AppService],

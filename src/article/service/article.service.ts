@@ -11,7 +11,7 @@ import { ConfigService } from '../../shared/config/config.service';
 import { ArticleDto, ArticleSearchDto } from '../dto/article.dto';
 import { ArticleEntity } from '../entity/article.entity';
 import { ArticleStatisticsEntity } from '../entity/article.statistics.entity';
-import { ArticleStatistics, ArticleUpdate } from '../interface/article.interface';
+import { ArticleStatistics, ArticleUpdate, ArticleOverview, Article } from '../interface/article.interface';
 
 @Injectable()
 export class ArticleService {
@@ -25,8 +25,8 @@ export class ArticleService {
     /**
      * !不知道SQl怎么写，用了下RX；
      */
-    findArticles(arg: ArticleSearchDto): Observable<ArticleEntity[]> {
-        const { offset, limit, author, title, category } = arg;
+    findArticles(arg: Partial<ArticleSearchDto>): Observable<ArticleEntity[] | ArticleOverview[]> {
+        const { offset, limit, author, title, category, isOverview } = arg;
 
         return from(
             this.articleRepository.find({
@@ -42,9 +42,16 @@ export class ArticleService {
                     filter(article => (title ? article.title.includes(title) : true)),
                     filter(article => (category ? !!intersection(category, article.category).length : true)),
                     reduce((acc: ArticleEntity[], cur: ArticleEntity) => [...acc, cur], []),
+                    map(articles => (isOverview ? articles.map(item => this.getOverview(item)) : articles)),
                 ),
             ),
         );
+    }
+
+    private getOverview(article: ArticleEntity): ArticleOverview {
+        const { id, createdAt, title, category, author } = article;
+
+        return { id, createdAt, title, author, category: Array.isArray(category) ? category : JSON.parse(category) };
     }
 
     /**

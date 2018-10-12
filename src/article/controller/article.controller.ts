@@ -9,6 +9,7 @@ import { ArticleService } from '../service/article.service';
 import { CRUDVar } from '../../shared/constant/constant';
 import { ARTICLE } from '../constant/constant';
 import { Observable } from 'rxjs';
+import { ArticleOverview } from '../interface/article.interface';
 
 @Controller(ARTICLE)
 @ApiUseTags(ARTICLE)
@@ -17,7 +18,7 @@ export class ArticleController {
 
     @Post(CRUDVar.SEARCH)
     @UseFilters(ArticleHttpExceptionFilter)
-    getArticles(@Body() conditions: ArticleSearchDto): Observable<ArticleEntity[]> {
+    getArticles(@Body() conditions: ArticleSearchDto): Observable<ArticleEntity[] | ArticleOverview[]> {
         return this.articleService.findArticles(conditions);
     }
 

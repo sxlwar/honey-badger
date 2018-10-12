@@ -24,3 +24,9 @@ export enum GithubAuthTest {
     clientSecret = '2d8b184a7e59a45131fbdddd1358c49cffd7f86a',
     redirect = 'http://localhost:3000',
 }
+
+export enum QiniuToken {
+    accessKey = 'Y7KtC0UrXL6JB1MaH1Z3VaVLgK-7XJEHkhWCC4xx',
+    secretKey = '80nRC4OM7yANxQhp8iC722C7ybCyTuluzMXKxUnb',
+    bucket = 'images',
+}
