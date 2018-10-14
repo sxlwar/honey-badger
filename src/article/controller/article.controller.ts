@@ -1,15 +1,15 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, UseFilters, UseGuards } from '@nestjs/common';
 import { ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiUseTags } from '@nestjs/swagger';
 
-import { ArticleDto, ArticleUpdateDto, ArticleDeleteDto, ArticleSearchDto } from '../dto/article.dto';
+import { ArticleDto, ArticleUpdateDto, ArticleDeleteDto, ArticleSearchDto, ArticleSeriesDto } from '../dto/article.dto';
 import { ArticleEntity } from '../entity/article.entity';
 import { ArticleHttpExceptionFilter } from '../filter/article.http.exception.filter';
 import { ArticleAvailableGuard, ArticleNotRepeatedGuard } from '../guard/article.guard';
 import { ArticleService } from '../service/article.service';
 import { CRUDVar } from '../../shared/constant/constant';
-import { ARTICLE } from '../constant/constant';
+import { ARTICLE, SERIES } from '../constant/constant';
 import { Observable } from 'rxjs';
-import { ArticleOverview } from '../interface/article.interface';
+import { ArticleOverview, ArticleSeriesOverview } from '../interface/article.interface';
 
 @Controller(ARTICLE)
 @ApiUseTags(ARTICLE)
@@ -20,6 +20,12 @@ export class ArticleController {
     @UseFilters(ArticleHttpExceptionFilter)
     getArticles(@Body() conditions: ArticleSearchDto): Observable<ArticleEntity[] | ArticleOverview[]> {
         return this.articleService.findArticles(conditions);
+    }
+
+    @Post(SERIES)
+    @UseFilters(ArticleHttpExceptionFilter)
+    getSeriesOverview(@Body() series: ArticleSeriesDto): Observable<ArticleSeriesOverview> {
+       return this.articleService.getSeriesOverview(series);
     }
 
     @Get(':id')

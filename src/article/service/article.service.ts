@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 
-import { intersection } from 'lodash';
+import { intersection, orderBy, sortBy } from 'lodash';
 import * as moment from 'moment';
 import { from, Observable } from 'rxjs';
 import { filter, map, mergeMap, reduce } from 'rxjs/operators';
@@ -8,10 +8,16 @@ import { Repository } from 'typeorm';
 
 import { RepositoryToken } from '../../shared/config/config.enum';
 import { ConfigService } from '../../shared/config/config.service';
-import { ArticleDto, ArticleSearchDto } from '../dto/article.dto';
+import { ArticleDto, ArticleSearchDto, ArticleSeriesDto } from '../dto/article.dto';
 import { ArticleEntity } from '../entity/article.entity';
 import { ArticleStatisticsEntity } from '../entity/article.statistics.entity';
-import { ArticleStatistics, ArticleUpdate, ArticleOverview, Article } from '../interface/article.interface';
+import {
+    ArticleStatistics,
+    ArticleUpdate,
+    ArticleOverview,
+    Article,
+    ArticleSeriesOverview,
+} from '../interface/article.interface';
 
 @Injectable()
 export class ArticleService {
@@ -26,7 +32,7 @@ export class ArticleService {
      * !不知道SQl怎么写，用了下RX；
      */
     findArticles(arg: Partial<ArticleSearchDto>): Observable<ArticleEntity[] | ArticleOverview[]> {
-        const { offset, limit, author, title, category, isOverview } = arg;
+        const { offset, limit, author, title, category, isOverview, rank } = arg;
 
         return from(
             this.articleRepository.find({
@@ -34,6 +40,7 @@ export class ArticleService {
                 take: limit || 100,
                 skip: offset || 0,
                 where: { isPublished: true },
+                relations: ['statistics'],
             }),
         ).pipe(
             mergeMap(list =>
@@ -43,15 +50,40 @@ export class ArticleService {
                     filter(article => (category ? !!intersection(category, article.category).length : true)),
                     reduce((acc: ArticleEntity[], cur: ArticleEntity) => [...acc, cur], []),
                     map(articles => (isOverview ? articles.map(item => this.getOverview(item)) : articles)),
+                    map(
+                        articles =>
+                            rank
+                                ? (orderBy(articles, [`statistics.${rank}`], ['desc']) as ArticleOverview[])
+                                : articles,
+                    ),
                 ),
             ),
         );
     }
 
-    private getOverview(article: ArticleEntity): ArticleOverview {
-        const { id, createdAt, title, category, author } = article;
+    /**
+     * ! 用sql怎么查？
+     */
+    getSeriesOverview(data: ArticleSeriesDto): Observable<ArticleSeriesOverview> {
+        return from(this.articleRepository.find({ where: { isPublished: true } })).pipe(
+            map(result => result.filter(item => item.category.includes(data.series))),
+            map(result => ({ total: result.length, original: result.filter(item => item.isOriginal).length })),
+        );
+    }
 
-        return { id, createdAt, title, author, category: Array.isArray(category) ? category : JSON.parse(category) };
+    private getOverview(article: ArticleEntity): ArticleOverview {
+        const { id, createdAt, title, category, author, content, statistics } = article;
+        const contentExceptImage = content.replace(/\!\[[\w\.\-\_]*\]\(.*\)/g, '');
+
+        return {
+            id,
+            createdAt,
+            title,
+            author,
+            statistics,
+            summary: contentExceptImage.slice(0, 100),
+            category: Array.isArray(category) ? category : JSON.parse(category),
+        };
     }
 
     /**

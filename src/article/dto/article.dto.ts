@@ -60,4 +60,13 @@ export class ArticleSearchDto {
 
     @ApiModelPropertyOptional()
     readonly isOverview: boolean;
+
+    @ApiModelPropertyOptional()
+    readonly rank: 'enjoy' | 'view' | 'stored';
+}
+
+@ApiUseTags(ARTICLE)
+export class ArticleSeriesDto {
+    @ApiModelProperty()
+    readonly series: 'angular' | 'typescript' | 'rxjs' | 'javascript' | 'other';
 }

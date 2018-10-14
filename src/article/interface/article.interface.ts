@@ -6,6 +6,8 @@ export interface ArticleOverview {
     createdAt: string;
     title: string;
     category: Category[];
+    summary: string;
+    statistics: ArticleStatistics;
 }
 
 export interface Article extends ArticleOverview {
@@ -35,4 +37,9 @@ export interface ArticleSearch {
     category?: string[];
     offset?: number;
     limit?: number;
+}
+
+export interface ArticleSeriesOverview {
+    total: number;
+    original: number;
 }
