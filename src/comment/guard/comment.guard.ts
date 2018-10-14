@@ -5,6 +5,7 @@ import {
     Injectable,
     UnauthorizedException,
     BadRequestException,
+    ReflectMetadata,
 } from '@nestjs/common';
 
 import { AuthService } from 'auth/service/auth.service';
@@ -38,6 +39,27 @@ export class IsAdminGuard implements CanActivate {
         const request = context.switchToHttp().getRequest();
 
         return this.authService.isAdmin(request.body.userId);
+    }
+}
+
+@Injectable()
+export class IsOwnerOrAdminGuard implements CanActivate {
+    constructor(
+        @Inject(RepositoryToken.CommentRepositoryToken) private readonly commentRepository: Repository<CommentEntity>,
+        private authService: AuthService,
+    ) {}
+
+    async canActivate(context: ExecutionContext): Promise<boolean> {
+        const request = context.switchToHttp().getRequest();
+        const { id, userId } = request.body;
+
+        const isOwner = await this.commentRepository.findOne(id).then(comment => comment.userId === userId);
+
+        if (isOwner) {
+            return true;
+        } else {
+            return this.authService.isAdmin(id);
+        }
     }
 }
 

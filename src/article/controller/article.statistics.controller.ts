@@ -8,6 +8,7 @@ import { ArticleStatisticsEntity } from '../entity/article.statistics.entity';
 import { StatisticsHttpExceptionFilter } from '../filter/article.statistics.http.exception.filter';
 import { StatisticsAvailableGuard } from '../guard/article.statistics.guard';
 import { ArticleService } from '../service/article.service';
+import { ArticleStatistics } from 'article/interface/article.interface';
 
 @Controller(STATISTICS)
 @ApiUseTags(STATISTICS)
@@ -24,7 +25,7 @@ export class ArticleStatisticsController {
     @Put(CRUDVar.UPDATE)
     @UseFilters(StatisticsHttpExceptionFilter)
     @UseGuards(StatisticsAvailableGuard)
-    async updateStatistics(@Body() data: ArticleStatisticsDto): Promise<boolean> {
+    async updateStatistics(@Body() data: ArticleStatisticsDto): Promise<Partial<ArticleStatistics>> {
         return this.articleService.updateStatistics(data);
     }
 }

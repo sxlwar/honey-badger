@@ -15,4 +15,7 @@ export class ReplyDto {
 
     @ApiModelProperty()
     readonly commentId: number;
+
+    @ApiModelProperty()
+    readonly userId: number;
 }

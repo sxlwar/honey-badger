@@ -75,9 +75,10 @@ export class ArticleService {
      */
     createArticle(data: ArticleDto): Observable<number> {
         const statistics = this.statisticsRepository.create();
-        const { category } = data;
+        const { category, content } = data;
         const article = this.articleRepository.create({
             ...data,
+            digest: content.slice(150).trim(),
             category: JSON.stringify(category),
             createdAt: moment().format(this.configService.dateFormat),
             statistics,
@@ -104,7 +105,18 @@ export class ArticleService {
         return this.statisticsRepository.findOne({ id });
     }
 
-    async updateStatistics(data: Partial<ArticleStatistics>): Promise<boolean> {
-        return this.statisticsRepository.save(data).then(res => !!res);
+    async updateStatistics(data: Partial<ArticleStatistics>): Promise<Partial<ArticleStatistics>> {
+        const { id, enjoy, stored } = data;
+        const statistics = await this.statisticsRepository.findOne({ id });
+
+        if (enjoy) {
+            statistics.enjoy += enjoy;
+        }
+
+        if (stored) {
+            statistics.stored += stored;
+        }
+
+        return this.statisticsRepository.save(statistics);
     }
 }
