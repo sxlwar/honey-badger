@@ -17,8 +17,9 @@ import {
     UpdateCommentResult,
 } from '../interface/comment.interface';
 import { CommentService } from '../service/comment.service';
+import { API } from '../../shared/constant/constant';
 
-@Controller(COMMENT)
+@Controller(API + '/' + COMMENT)
 @ApiUseTags(COMMENT)
 export class CommentController {
     constructor(private readonly commentService: CommentService) {}

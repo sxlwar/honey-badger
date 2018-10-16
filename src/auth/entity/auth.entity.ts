@@ -19,4 +19,21 @@ export class UserEntity {
 
     @Column({ default: false })
     isAdmin: boolean;
+
+    @Column({ default: false })
+    isLogout: boolean;
+
+    @Column({
+        transformer: {
+            to: value => value,
+            from: value => {
+                try {
+                    return JSON.parse(value);
+                } catch (e) {
+                    return value;
+                }
+            },
+        },
+    })
+    storedArticles: string; // JSON parse to string[];
 }

@@ -5,3 +5,5 @@ export enum CRUDVar {
     DELETE = 'delete',
     SEARCH = 'search',
 }
+
+export const API = 'api';

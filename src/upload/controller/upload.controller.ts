@@ -1,14 +1,15 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { ApiCreatedResponse, ApiUseTags } from '@nestjs/swagger';
 
-import { CRUDVar } from 'shared/constant/constant';
-import { UploadDto } from 'upload/dto/upload.dto';
-import { UploadService } from 'upload/service/upload.service';
+import { CRUDVar } from '../../shared/constant/constant';
+import { UploadDto } from '../../upload/dto/upload.dto';
+import { UploadService } from '../../upload/service/upload.service';
 
 import { UPLOAD } from '../constant/constant';
 import { UploadTokenResponse } from '../interface/upload.interface';
+import { API } from '../../shared/constant/constant';
 
-@Controller(UPLOAD)
+@Controller(API + '/' + UPLOAD)
 @ApiUseTags(UPLOAD)
 export class UploadController {
     constructor(private readonly uploadService: UploadService) {}

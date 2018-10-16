@@ -22,7 +22,7 @@ export enum GithubAuth {
 export enum GithubAuthTest {
     clientId = 'd9cd51d2ac0a7386eb8e',
     clientSecret = '2d8b184a7e59a45131fbdddd1358c49cffd7f86a',
-    redirect = 'http://localhost:3000',
+    redirect = 'http://localhost:4200',
 }
 
 export enum QiniuToken {

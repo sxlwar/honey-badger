@@ -10,8 +10,9 @@ import { CRUDVar } from '../../shared/constant/constant';
 import { ARTICLE, SERIES } from '../constant/constant';
 import { Observable } from 'rxjs';
 import { ArticleOverview, ArticleSeriesOverview } from '../interface/article.interface';
+import { API } from '../../shared/constant/constant';
 
-@Controller(ARTICLE)
+@Controller(API + '/' + ARTICLE)
 @ApiUseTags(ARTICLE)
 export class ArticleController {
     constructor(private articleService: ArticleService) {}
@@ -25,7 +26,7 @@ export class ArticleController {
     @Post(SERIES)
     @UseFilters(ArticleHttpExceptionFilter)
     getSeriesOverview(@Body() series: ArticleSeriesDto): Observable<ArticleSeriesOverview> {
-       return this.articleService.getSeriesOverview(series);
+        return this.articleService.getSeriesOverview(series);
     }
 
     @Get(':id')

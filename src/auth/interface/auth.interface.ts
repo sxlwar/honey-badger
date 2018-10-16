@@ -43,3 +43,28 @@ export interface GithubUser {
         private_repos: number;
     };
 }
+
+export interface GithubAuthConfigResponse {
+    clientId: string;
+    redirect: string;
+    state: string;
+}
+
+export interface LogoutResponse {
+    isLogout: boolean;
+}
+
+export interface StoreResponse {
+    isSuccess: boolean;
+}
+
+export interface Bookmark {
+    id: number;
+    author: string;
+    createdAt: string;
+    title: string;
+}
+export interface BookmarkResponse {
+    articles: Bookmark[];
+    count: number;
+}

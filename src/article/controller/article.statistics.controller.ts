@@ -9,8 +9,9 @@ import { StatisticsHttpExceptionFilter } from '../filter/article.statistics.http
 import { StatisticsAvailableGuard } from '../guard/article.statistics.guard';
 import { ArticleService } from '../service/article.service';
 import { ArticleStatistics } from 'article/interface/article.interface';
+import { API } from '../../shared/constant/constant';
 
-@Controller(STATISTICS)
+@Controller(API + '/' + STATISTICS)
 @ApiUseTags(STATISTICS)
 export class ArticleStatisticsController {
     constructor(private articleService: ArticleService) {}

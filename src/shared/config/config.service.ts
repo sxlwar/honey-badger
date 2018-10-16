@@ -3,6 +3,12 @@ import { Injectable } from '@nestjs/common';
 import { get } from 'config';
 import { GithubAuth, GithubAuthTest } from './config.enum';
 
+export interface GithubAuthConfig {
+    clientId: string;
+    clientSecret: string;
+    redirect: string;
+}
+
 @Injectable()
 export class ConfigService {
     private devEnvironment: string = process.env.NODE_ENV ? 'production' : 'development';
@@ -26,7 +32,7 @@ export class ConfigService {
         return this.devEnvironment === 'development';
     }
 
-    get authConfig() {
+    get authConfig(): GithubAuthConfig {
         return this.isDevelopment ? GithubAuthTest : GithubAuth;
     }
 }

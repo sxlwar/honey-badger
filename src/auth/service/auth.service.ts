@@ -1,12 +1,24 @@
-import { Injectable, HttpService, Inject } from '@nestjs/common';
+import { HttpService, Inject, Injectable } from '@nestjs/common';
 
-import { Observable, from } from 'rxjs';
+import { ArticleEntity } from 'article/entity/article.entity';
+import { uniq } from 'lodash';
+import { from, Observable } from 'rxjs';
 import { map, mergeMap } from 'rxjs/operators';
-import { ConfigService } from '../../shared/config/config.service';
-import { GithubUser } from '../interface/auth.interface';
+import { In, Repository } from 'typeorm';
+import * as uuid from 'uuid/v4';
+
 import { RepositoryToken } from '../../shared/config/config.enum';
+import { ConfigService } from '../../shared/config/config.service';
+import { ValidStoreOperate } from '../constant/constant';
+import { BookmarkDto, StoreDto } from '../dto/auth.dot';
 import { UserEntity } from '../entity/auth.entity';
-import { Repository } from 'typeorm';
+import {
+    BookmarkResponse,
+    GithubAuthConfigResponse,
+    GithubUser,
+    LogoutResponse,
+    StoreResponse,
+} from '../interface/auth.interface';
 
 @Injectable()
 export class AuthService {
@@ -17,6 +29,7 @@ export class AuthService {
         private readonly configService: ConfigService,
         private readonly httpService: HttpService,
         @Inject(RepositoryToken.AuthRepositoryToken) private readonly userRepository: Repository<UserEntity>,
+        @Inject(RepositoryToken.ArticleRepositoryToken) private readonly articleRepository: Repository<ArticleEntity>,
     ) {}
 
     /**
@@ -47,20 +60,36 @@ export class AuthService {
      */
     private getGithubUserInfo(token: string): Observable<UserEntity> {
         return this.httpService.get(`${this.githubUserInfoURI}?access_token=${token}`).pipe(
-            map(res => {
+            mergeMap(res => {
                 const { id, login, name, email, avatar_url } = res.data as GithubUser;
-                return this.userRepository.create({
+
+                const storedUser = this.findUser(id);
+
+                const newUser = this.userRepository.create({
                     id,
                     account: login,
                     email,
                     avatar: avatar_url,
                     name,
+                    storedArticles: JSON.stringify([]),
                 });
+
+                return from(storedUser).pipe(
+                    map(user => {
+                        if (user) {
+                            user.isLogout = false;
+
+                            return user;
+                        } else {
+                            return newUser;
+                        }
+                    }),
+                );
             }),
         );
     }
 
-    private async findUser(id: number): Promise<UserEntity> {
+    async findUser(id: number): Promise<UserEntity> {
         return this.userRepository.findOne({ id });
     }
 
@@ -70,5 +99,52 @@ export class AuthService {
 
     async isAdmin(id: number): Promise<boolean> {
         return this.findUser(id).then(user => !!user && user.isAdmin);
+    }
+
+    getGithubConfig(): GithubAuthConfigResponse {
+        const config = this.configService.authConfig;
+
+        return { clientId: config.clientId, redirect: config.redirect, state: uuid().replace(/-/g, '') };
+    }
+
+    async logout(id: number): Promise<LogoutResponse> {
+        return this.userRepository.update(id, { isLogout: true }).then(res => ({ isLogout: !!res }));
+    }
+
+    async store(info: StoreDto): Promise<StoreResponse> {
+        const { id, articleId, operate } = info;
+        const user = await this.findUser(id);
+        const storedArticles: Array<number> = Array.isArray(user.storedArticles)
+            ? user.storedArticles
+            : JSON.parse(user.storedArticles);
+
+        if (operate === ValidStoreOperate.ADD) {
+            user.storedArticles = JSON.stringify(uniq([...storedArticles, articleId]));
+        } else if (operate === ValidStoreOperate.REMOVE) {
+            user.storedArticles = JSON.stringify(storedArticles.filter(item => item !== articleId));
+        } else {
+            user.storedArticles = JSON.stringify([]);
+        }
+
+        return this.userRepository.update(id, user).then(res => ({ isSuccess: !!res }));
+    }
+
+    async getBookmarks(data: BookmarkDto): Promise<BookmarkResponse> {
+        const user = await this.findUser(data.id);
+        const storedArticles: Array<number> = Array.isArray(user.storedArticles)
+            ? user.storedArticles
+            : JSON.parse(user.storedArticles);
+
+        if (storedArticles.length === 0) {
+            return { articles: [], count: 0 };
+        } else {
+            return this.articleRepository
+                .findAndCount({
+                    order: { createdAt: 'DESC' },
+                    select: ['id', 'title', 'author', 'createdAt'],
+                    where: { id: In(storedArticles), isDeleted: false },
+                })
+                .then(([articles, count]) => ({ articles, count }));
+        }
     }
 }

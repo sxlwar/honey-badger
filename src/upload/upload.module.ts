@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { UploadController } from './upload/upload.controller';
+import { UploadController } from './controller/upload.controller';
 import { UploadService } from './service/upload.service';
 
 @Module({

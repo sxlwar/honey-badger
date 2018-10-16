@@ -8,9 +8,9 @@ import {
     ReflectMetadata,
 } from '@nestjs/common';
 
-import { AuthService } from 'auth/service/auth.service';
+import { AuthService } from '../../auth/service/auth.service';
 import { Observable } from 'rxjs';
-import { RepositoryToken } from 'shared/config/config.enum';
+import { RepositoryToken } from '../../shared/config/config.enum';
 import { Repository } from 'typeorm';
 
 import { CommentEntity } from '../entity/comment.entity';
