@@ -18,9 +18,9 @@ export class ArticleMessageService extends MessageService {
     }
 
     private getForbiddenMessage(path: string): string {
-        const subPath = path.split('/').filter(item => !!item)[1];
+        const paths = path.split('/').filter(item => !!item);
 
-        if (subPath === CRUDVar.CREATE) {
+        if (paths[paths.length - 1] === CRUDVar.CREATE) {
             return this.DUPLICATE_ARTICLE_MSG;
         } else {
             return this.CAN_NOT_FIND_ARTICLE_MSG;

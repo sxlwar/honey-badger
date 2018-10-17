@@ -37,7 +37,7 @@ export class ArticleService {
         return from(
             this.articleRepository.find({
                 order: { createdAt: 'DESC' },
-                take: limit || 100,
+                take: limit || 1000,
                 skip: offset || 0,
                 where: { isPublished: true },
                 relations: ['statistics', 'user'],
