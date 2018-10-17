@@ -3,7 +3,7 @@ import { HttpService, Inject, Injectable } from '@nestjs/common';
 import { ArticleEntity } from 'article/entity/article.entity';
 import { uniq } from 'lodash';
 import { from, Observable } from 'rxjs';
-import { map, mergeMap } from 'rxjs/operators';
+import { mergeMap, mapTo } from 'rxjs/operators';
 import { In, Repository } from 'typeorm';
 import * as uuid from 'uuid/v4';
 
@@ -48,10 +48,7 @@ export class AuthService {
 
         return this.httpService
             .post(this.githubAccessTokenURI, param, { headers: { Accept: 'application/json' } })
-            .pipe(
-                mergeMap(({ data }) => this.getGithubUserInfo(data.access_token)),
-                mergeMap(user => from(this.userRepository.save(user))),
-            );
+            .pipe(mergeMap(({ data }) => this.getGithubUserInfo(data.access_token)));
     }
 
     /**
@@ -62,24 +59,31 @@ export class AuthService {
         return this.httpService.get(`${this.githubUserInfoURI}?access_token=${token}`).pipe(
             mergeMap(res => {
                 const { id, login, name, email, avatar_url } = res.data as GithubUser;
-                const storedUser = this.findUser(id);
-                const newUser = this.userRepository.create({
-                    githubId: id,
-                    account: login,
-                    email,
-                    avatar: avatar_url,
-                    name,
-                    storedArticles: JSON.stringify([]),
-                });
 
-                return from(storedUser).pipe(
-                    map(user => {
+                return from(this.findUser(id)).pipe(
+                    mergeMap(user => {
                         if (user) {
-                            user.isLogout = false;
+                            const updatedFields = {
+                                isLogout: false,
+                                account: login,
+                                avatar: avatar_url,
+                                name: name || '',
+                                email: email || '',
+                            };
+                            const updatedUserInfo = this.userRepository.update(user.id, updatedFields);
 
-                            return user;
+                            return from(updatedUserInfo).pipe(mapTo({ ...user, ...updatedFields }));
                         } else {
-                            return newUser;
+                            const newUser = this.userRepository.create({
+                                githubId: id,
+                                account: login,
+                                email: email || '',
+                                avatar: avatar_url,
+                                name: name || '',
+                                storedArticles: JSON.stringify([]),
+                            });
+
+                            return from(this.userRepository.save(newUser));
                         }
                     }),
                 );
@@ -105,8 +109,11 @@ export class AuthService {
         return { clientId: config.clientId, redirect: config.redirect, state: uuid().replace(/-/g, '') };
     }
 
+    // 传上来的是github id;
     async logout(id: number): Promise<LogoutResponse> {
-        return this.userRepository.update(id, { isLogout: true }).then(res => ({ isLogout: !!res }));
+        const user = await this.findUser(id);
+
+        return this.userRepository.update(user.id, { isLogout: true }).then(res => ({ isLogout: !!res }));
     }
 
     async store(info: StoreDto): Promise<StoreResponse> {
@@ -128,7 +135,7 @@ export class AuthService {
     }
 
     async getBookmarks(data: BookmarkDto): Promise<BookmarkResponse> {
-        const user = await this.findUser(data.id);
+        const user = await this.userRepository.findOne({ id: data.id });
         const storedArticles: Array<number> = Array.isArray(user.storedArticles)
             ? user.storedArticles
             : JSON.parse(user.storedArticles);

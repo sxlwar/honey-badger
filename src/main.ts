@@ -8,10 +8,10 @@ import { AppModule } from './app.module';
 declare const module: any;
 
 async function bootstrap() {
-    const app = await NestFactory.create(AppModule, {
-        cors: { origin: ['http://localhost:4200', 'http://localhost:3000'] },
-    });
-    // const app = await NestFactory.create(AppModule, { cors: true });
+    // const app = await NestFactory.create(AppModule, {
+    //     cors: { origin: ['http://localhost:4200', 'http://localhost:3000', 'http://192.168.2.104:8080'] },
+    // });
+    const app = await NestFactory.create(AppModule, { cors: true });
 
     const hostDomain = AppModule.isDev ? `${AppModule.host}:${AppModule.port.toString()}` : AppModule.host;
 

@@ -1,7 +1,7 @@
 import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 
 import { ArticleStatisticsEntity } from './article.statistics.entity';
-import { UserEntity } from 'auth/entity/auth.entity';
+import { UserEntity } from '../../auth/entity/auth.entity';
 
 @Entity()
 export class ArticleEntity {

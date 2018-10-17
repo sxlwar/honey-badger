@@ -108,9 +108,12 @@ export class ArticleService {
      */
     createArticle(data: ArticleDto): Observable<number> {
         const statistics = this.statisticsRepository.create();
-        const { category, content } = data;
+        const { category, content, title, subtitle, author } = data;
         const article = this.articleRepository.create({
             ...data,
+            title: title.trim(),
+            subtitle: subtitle.trim(),
+            author: author.trim(),
             digest: content.slice(150).trim(),
             category: JSON.stringify(category),
             createdAt: moment().format(this.configService.dateFormat),
