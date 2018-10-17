@@ -62,11 +62,9 @@ export class AuthService {
         return this.httpService.get(`${this.githubUserInfoURI}?access_token=${token}`).pipe(
             mergeMap(res => {
                 const { id, login, name, email, avatar_url } = res.data as GithubUser;
-
                 const storedUser = this.findUser(id);
-
                 const newUser = this.userRepository.create({
-                    id,
+                    githubId: id,
                     account: login,
                     email,
                     avatar: avatar_url,
@@ -90,7 +88,7 @@ export class AuthService {
     }
 
     async findUser(id: number): Promise<UserEntity> {
-        return this.userRepository.findOne({ id });
+        return this.userRepository.findOne({ githubId: id });
     }
 
     async hasLogged(id: number): Promise<boolean> {

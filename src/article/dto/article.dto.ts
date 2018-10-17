@@ -24,6 +24,9 @@ export class ArticleDto {
 
     @ApiModelProperty()
     readonly isOriginal: boolean;
+
+    @ApiModelProperty()
+    readonly userId: number;
 }
 
 @ApiUseTags(ARTICLE)

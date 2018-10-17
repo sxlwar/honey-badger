@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 
-import { intersection, orderBy, sortBy } from 'lodash';
+import { intersection, orderBy } from 'lodash';
 import * as moment from 'moment';
 import { from, Observable } from 'rxjs';
 import { filter, map, mergeMap, reduce } from 'rxjs/operators';
@@ -8,15 +8,15 @@ import { Repository } from 'typeorm';
 
 import { RepositoryToken } from '../../shared/config/config.enum';
 import { ConfigService } from '../../shared/config/config.service';
-import { ArticleDto, ArticleSearchDto, ArticleSeriesDto } from '../dto/article.dto';
+import { ArticleDto, ArticleSearchDto, ArticleSeriesDto, ArticleUpdateDto } from '../dto/article.dto';
 import { ArticleEntity } from '../entity/article.entity';
 import { ArticleStatisticsEntity } from '../entity/article.statistics.entity';
 import {
     ArticleStatistics,
-    ArticleUpdate,
+    ArticleUpdateResult,
     ArticleOverview,
-    Article,
     ArticleSeriesOverview,
+    ArticleDeleteResult,
 } from '../interface/article.interface';
 
 @Injectable()
@@ -40,7 +40,7 @@ export class ArticleService {
                 take: limit || 100,
                 skip: offset || 0,
                 where: { isPublished: true },
-                relations: ['statistics'],
+                relations: ['statistics', 'user'],
             }),
         ).pipe(
             mergeMap(list =>
@@ -72,7 +72,7 @@ export class ArticleService {
     }
 
     private getOverview(article: ArticleEntity): ArticleOverview {
-        const { id, createdAt, title, category, author, content, statistics } = article;
+        const { id, createdAt, title, category, author, content, statistics, user } = article;
         const contentExceptImage = content.replace(/\!\[[\w\.\-\_]*\]\(.*\)/g, '');
 
         return {
@@ -83,6 +83,7 @@ export class ArticleService {
             statistics,
             summary: contentExceptImage.slice(0, 100),
             category: Array.isArray(category) ? category : JSON.parse(category),
+            avatar: user.avatar,
         };
     }
 
@@ -119,16 +120,16 @@ export class ArticleService {
         return from(this.articleRepository.save(article)).pipe(map(result => result.id));
     }
 
-    async updateArticle(data: ArticleUpdate): Promise<boolean> {
+    async updateArticle(data: ArticleUpdateDto): Promise<ArticleUpdateResult> {
         const { id, content } = data;
 
         return this.articleRepository
             .update(id, { content, updatedAt: moment().format(this.configService.dateFormat) })
-            .then(res => !!res);
+            .then(res => ({ isUpdated: !!res }));
     }
 
-    async deleteArticle(id: number): Promise<boolean> {
-        return this.articleRepository.update(id, { isDeleted: true }).then(res => !!res);
+    async deleteArticle(id: number): Promise<ArticleDeleteResult> {
+        return this.articleRepository.update(id, { isDeleted: true }).then(res => ({ isDeleted: !!res }));
     }
 
     // ================================================Article statistics==================================================

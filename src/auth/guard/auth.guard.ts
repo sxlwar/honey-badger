@@ -17,7 +17,7 @@ export class IsLoginStateGuard implements CanActivate {
         const request = context.switchToHttp().getRequest();
         const { id } = request.body;
 
-        return from(this.userRepository.findOne({ id })).pipe(map(user => !!user && !user.isLogout));
+        return from(this.userRepository.findOne({ githubId: id })).pipe(map(user => !!user && !user.isLogout));
     }
 }
 

@@ -1,6 +1,7 @@
-import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 
 import { ArticleStatisticsEntity } from './article.statistics.entity';
+import { UserEntity } from 'auth/entity/auth.entity';
 
 @Entity()
 export class ArticleEntity {
@@ -54,4 +55,10 @@ export class ArticleEntity {
     @OneToOne(_type => ArticleStatisticsEntity, statistics => statistics.article, { cascade: true })
     @JoinColumn()
     statistics: ArticleStatisticsEntity;
+
+    @Column()
+    userId: number;
+
+    @ManyToOne(_type => UserEntity, user => user.articles, { cascade: true })
+    user: UserEntity;
 }

@@ -1,9 +1,13 @@
-import { Column, Entity, OneToMany, PrimaryColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm';
+import { ArticleEntity } from 'article/entity/article.entity';
 
 @Entity()
 export class UserEntity {
-    @PrimaryColumn()
+    @PrimaryGeneratedColumn()
     id: number;
+
+    @Column()
+    githubId: number;
 
     @Column()
     account: string;
@@ -36,4 +40,7 @@ export class UserEntity {
         },
     })
     storedArticles: string; // JSON parse to string[];
+
+    @OneToMany(_type => ArticleEntity, article => article.user)
+    articles: ArticleEntity[];
 }

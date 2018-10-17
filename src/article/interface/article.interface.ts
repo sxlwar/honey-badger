@@ -8,6 +8,7 @@ export interface ArticleOverview {
     category: Category[];
     summary: string;
     statistics: ArticleStatistics;
+    avatar: string;
 }
 
 export interface Article extends ArticleOverview {
@@ -18,9 +19,12 @@ export interface Article extends ArticleOverview {
     isDeleted: boolean;
 }
 
-export interface ArticleUpdate {
-    id: number;
-    content: string;
+export interface ArticleUpdateResult {
+    isUpdated: boolean;
+}
+
+export interface ArticleDeleteResult {
+    isDeleted: boolean;
 }
 
 export interface ArticleStatistics {

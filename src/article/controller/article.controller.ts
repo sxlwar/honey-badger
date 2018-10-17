@@ -9,7 +9,7 @@ import { ArticleService } from '../service/article.service';
 import { CRUDVar } from '../../shared/constant/constant';
 import { ARTICLE, SERIES } from '../constant/constant';
 import { Observable } from 'rxjs';
-import { ArticleOverview, ArticleSeriesOverview } from '../interface/article.interface';
+import { ArticleOverview, ArticleSeriesOverview, ArticleUpdateResult, ArticleDeleteResult } from '../interface/article.interface';
 import { API } from '../../shared/constant/constant';
 
 @Controller(API + '/' + ARTICLE)
@@ -49,14 +49,14 @@ export class ArticleController {
     @UseGuards(ArticleAvailableGuard)
     @ApiOkResponse({ description: 'Updated success.' })
     @ApiNotFoundResponse({ description: 'Target article not found.' })
-    async updateArticle(@Body() info: ArticleUpdateDto): Promise<boolean> {
+    async updateArticle(@Body() info: ArticleUpdateDto): Promise<ArticleUpdateResult> {
         return this.articleService.updateArticle(info);
     }
 
     @Delete(CRUDVar.DELETE)
     @UseFilters(ArticleHttpExceptionFilter)
     @UseGuards(ArticleAvailableGuard)
-    async deleteArticle(@Body() info: ArticleDeleteDto): Promise<boolean> {
+    async deleteArticle(@Body() info: ArticleDeleteDto): Promise<ArticleDeleteResult> {
         return this.articleService.deleteArticle(info.id);
     }
 }
