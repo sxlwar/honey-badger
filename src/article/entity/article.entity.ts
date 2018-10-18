@@ -26,9 +26,6 @@ export class ArticleEntity {
     @Column('text')
     content: string;
 
-    @Column('text')
-    digest: string;
-
     @Column()
     isPublished: boolean;
 

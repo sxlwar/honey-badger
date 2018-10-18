@@ -114,7 +114,6 @@ export class ArticleService {
             title: title.trim(),
             subtitle: subtitle.trim(),
             author: author.trim(),
-            digest: content.slice(150).trim(),
             category: JSON.stringify(category),
             createdAt: moment().format(this.configService.dateFormat),
             statistics,
