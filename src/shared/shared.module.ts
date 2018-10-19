@@ -4,7 +4,12 @@ import { ConfigService } from './config/config.service';
 
 @Global()
 @Module({
-    providers: [ConfigService],
+    providers: [
+        {
+            provide: ConfigService,
+            useValue: new ConfigService(`${process.env.NODE_ENV}.env`),
+        },
+    ],
     exports: [ConfigService],
 })
 export class SharedModule {}

@@ -2,6 +2,13 @@ import { Injectable } from '@nestjs/common';
 
 import { get } from 'config';
 import { GithubAuth, GithubAuthTest } from './config.enum';
+import * as dotenv from 'dotenv';
+import * as fs from 'fs';
+import * as Joi from 'joi';
+
+export interface EnvConfig {
+    [key: string]: string;
+}
 
 export interface GithubAuthConfig {
     clientId: string;
@@ -11,12 +18,40 @@ export interface GithubAuthConfig {
 
 @Injectable()
 export class ConfigService {
-    private devEnvironment: string = process.env.NODE_ENV ? 'production' : 'development';
-
-    /**
-     * Date time format
-     */
     readonly dateFormat: string = 'YYYY-MM-DD HH:mm:ss';
+
+    private readonly envConfig: EnvConfig;
+
+    constructor(filePath: string) {
+        const config = dotenv.parse(fs.readFileSync(filePath));
+
+        this.envConfig = this.validateInput(config);
+    }
+
+    private validateInput(envConfig: EnvConfig): EnvConfig {
+        const envVarsSchema: Joi.ObjectSchema = Joi.object({
+            NODE_ENV: Joi.string()
+                .valid(['development', 'production', 'test', 'provision'])
+                .default('development'),
+            PORT: Joi.number().default(3000),
+            IS_PRODUCTION: Joi.boolean().required(),
+            DATABASE: Joi.string(),
+            DATABASE_USER: Joi.string(),
+            DATABASE_PASSWORD: Joi.string(),
+        });
+
+        const { error, value: validatedEnvConfig } = Joi.validate(envConfig, envVarsSchema);
+
+        if (error) {
+            throw new Error(`Config validation error: ${error.message}`);
+        }
+
+        return validatedEnvConfig;
+    }
+
+    get(key: string): string {
+        return this.envConfig[key];
+    }
 
     /**
      * Method to return specific config variable using the constants from config.constant.ts.
@@ -29,7 +64,7 @@ export class ConfigService {
     }
 
     get isDevelopment(): boolean {
-        return this.devEnvironment === 'development';
+        return !Boolean(this.envConfig.IS_PRODUCTION);
     }
 
     get authConfig(): GithubAuthConfig {

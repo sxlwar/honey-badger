@@ -32,15 +32,20 @@ export class AppModule {
     public static port: number | string;
     public static host: string;
     public static isDev: boolean;
+    public static database: string;
+    public static databasePwd: string;
 
-    /**
-     * * Grab HOST and PORT from Config Variables
-     * *@param {ConfigService} _configService
-     */
     constructor(private readonly _configService: ConfigService) {
-        AppModule.port = AppModule.normalizePort(_configService.getConfigVariable(ConfigVar.PORT));
-        AppModule.host = _configService.getConfigVariable(ConfigVar.HOST);
-        AppModule.isDev = _configService.isDevelopment;
+        this.initialConfigValue();
+    }
+
+    private initialConfigValue() {
+        AppModule.port = AppModule.normalizePort(this._configService.getConfigVariable(ConfigVar.PORT));
+        AppModule.host = this._configService.getConfigVariable(ConfigVar.HOST);
+        AppModule.isDev = this._configService.isDevelopment;
+        AppModule.database = this._configService.get('DATABASE');
+        AppModule.databasePwd = this._configService.get('DATABASE_PASSWORD');
+        console.log(AppModule.database, AppModule.databasePwd, AppModule.isDev);
     }
 
     /**

@@ -2,6 +2,8 @@ import { createConnection } from 'typeorm';
 
 import { RepositoryToken } from '../shared/config/config.enum';
 
+const isDev = process.env.NODE_ENV === 'development';
+
 export const databaseProviders = [
     {
         provide: RepositoryToken.DbConnectionToken,
@@ -11,8 +13,8 @@ export const databaseProviders = [
                 host: 'localhost',
                 port: 3306,
                 username: 'root',
-                password: 'ratel',
-                database: 'test',
+                password: isDev ? 'ratel' : 'honey_badger',
+                database: isDev ? 'test' : 'honey_badger',
                 entities: [__dirname + '/../**/*.entity{.ts,.js}'],
                 synchronize: true,
             }),

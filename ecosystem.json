@@ -1,0 +1,29 @@
+{
+    "apps":[
+        {
+            "name":"honey-badger", 
+            "script":"./dist/main.js",
+            "env":{
+                "COMMON_VARIABLE": "true" 
+            },
+            "env_production" : {
+                "NODE_ENV": "production"
+              }
+        }
+    ],
+    "deploy":{
+        "production":{
+            "user":"yang",
+            "host":["hijavascript.com"],
+            "port":"22",
+            "ref":"origin/master",
+            "repo":"git@gitee.com:hackzfy/honey-badger.git",
+            "path":"/www/server/production",
+            "ssh_options":"StrictHostKeyChecking=no",
+            "post-deploy": "npm && pm2 reload ecosystem.config.js --env production",
+            "env":{
+                "NODE_ENV":"production"
+            }
+        }
+    }
+}
