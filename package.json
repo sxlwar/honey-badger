@@ -17,8 +17,7 @@
         "test:watch": "jest --watch",
         "test:cov": "jest --coverage",
         "test:e2e": "jest --config ./test/jest-e2e.json",
-        "webpack": "webpack --config webpack.config.js",
-        "deploy": "pm2 deploy ecosystem.json production"
+        "webpack": "webpack --config webpack.config.js"
     },
     "dependencies": {
         "@nestjs/common": "^5.1.0",
