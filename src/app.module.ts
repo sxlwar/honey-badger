@@ -45,7 +45,6 @@ export class AppModule {
         AppModule.isDev = this._configService.isDevelopment;
         AppModule.database = this._configService.get('DATABASE');
         AppModule.databasePwd = this._configService.get('DATABASE_PASSWORD');
-        console.log(AppModule.database, AppModule.databasePwd, AppModule.isDev);
     }
 
     /**
