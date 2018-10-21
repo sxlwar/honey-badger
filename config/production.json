@@ -4,5 +4,5 @@
     "DATABASE": "honey_badger",
     "IS_PRODUCTION": true,
     "HOST": "www.hijavascript.com",
-    "PORT": 300
+    "PORT": 3000
 }

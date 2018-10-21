@@ -4,5 +4,5 @@
     "DATABASE": "test",
     "IS_PRODUCTION": false,
     "HOST": "localhost",
-    "PORT": 300
+    "PORT": 3000
 }
