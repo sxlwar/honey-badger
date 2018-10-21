@@ -15,24 +15,22 @@ async function bootstrap() {
     // Help secure app by setting various HTTP headers;
     app.use(helmet());
 
-    if (AppModule.isDev) {
-        const options = new DocumentBuilder()
-            .setTitle('Ratel')
-            .setDescription('API Documentation from Ratel')
-            .setVersion('1.0.0')
-            .setHost(hostDomain.split('//')[1])
-            .setSchemes('http')
-            .addTag('Article', 'Article related api')
-            .build();
+    const options = new DocumentBuilder()
+        .setTitle('Ratel')
+        .setDescription('API Documentation from Ratel')
+        .setVersion('1.0.0')
+        .setHost(hostDomain.split('//')[1])
+        .setSchemes('http')
+        .addTag('Article', 'Article related api')
+        .build();
 
-        const documentation = SwaggerModule.createDocument(app, options);
+    const documentation = SwaggerModule.createDocument(app, options);
 
-        SwaggerModule.setup('/swagger', app, documentation);
-    }
+    SwaggerModule.setup('/swagger', app, documentation);
 
     await app.listen(AppModule.port);
 
-    if (module.hot) {
+    if (module.hot && AppModule.isDev) {
         module.hot.accept();
         module.hot.dispose(() => app.close());
     }
