@@ -96,7 +96,7 @@ export class AuthService {
     }
 
     async hasLogged(id: number): Promise<boolean> {
-        return this.findUser(id).then(user => !!user);
+        return this.userRepository.findOne({ id }).then(user => !!user);
     }
 
     async isAdmin(id: number): Promise<boolean> {
