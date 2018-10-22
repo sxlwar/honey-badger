@@ -118,7 +118,7 @@ export class AuthService {
 
     async store(info: StoreDto): Promise<StoreResponse> {
         const { id, articleId, operate } = info;
-        const user = await this.findUser(id);
+        const user = await this.userRepository.findOne({ id });
         const storedArticles: Array<number> = Array.isArray(user.storedArticles)
             ? user.storedArticles
             : JSON.parse(user.storedArticles);
