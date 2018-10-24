@@ -7,3 +7,8 @@ export enum CRUDVar {
 }
 
 export const API = 'api';
+
+export enum Env {
+    production = 'production',
+    development = 'development',
+}

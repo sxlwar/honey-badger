@@ -4,11 +4,12 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as helmet from 'helmet';
 
 import { AppModule } from './app.module';
+import { Env } from './shared/constant/constant';
 
 declare const module: any;
 
 async function bootstrap() {
-    const isDev = process.env.NODE_ENV === 'development';
+    const isDev = process.env.NODE_ENV === Env.development;
     const app = await NestFactory.create(AppModule, { cors: isDev });
     const hostDomain = AppModule.isDev ? `${AppModule.host}:${AppModule.port.toString()}` : AppModule.host;
 

@@ -9,6 +9,21 @@ import { ConfigVar } from './shared/config/config.enum';
 import { ConfigService } from './shared/config/config.service';
 import { SharedModule } from './shared/shared.module';
 import { UploadModule } from './upload/upload.module';
+import { AngularUniversalModule, applyDomino } from '@nestjs/ng-universal';
+import { join } from 'path';
+import * as domino from 'domino';
+
+const ssrPath = join(process.cwd(), 'dist');
+
+(function patchWindow() {
+    // 这个方法上没有加navigator
+    const tpl = join(ssrPath, 'browser', 'index.html');
+    const win = domino.createWindow(tpl);
+
+    global['navigator'] = win.navigator;
+
+    applyDomino(global, tpl);
+})();
 
 @Module({
     imports: [
@@ -20,6 +35,10 @@ import { UploadModule } from './upload/upload.module';
         CommentModule,
         AuthModule,
         UploadModule,
+        AngularUniversalModule.forRoot({
+            viewsPath: join(ssrPath, 'browser'),
+            bundle: require(ssrPath + '/browser/main'),
+        }),
     ],
     controllers: [AppController],
     providers: [AppService],
