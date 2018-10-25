@@ -1,17 +1,8 @@
-import { Controller, Get, UseInterceptors } from '@nestjs/common';
-
-import { AppService } from './app.service';
-import { HomePageInterceptor, StaticFileInterceptor } from './interceptor/app.interceptor';
+import { Controller } from '@nestjs/common';
 
 @Controller()
 export class AppController {
-    constructor(private readonly appService: AppService) {}
+    constructor() {}
 
-    @Get('/')
-    @UseInterceptors(HomePageInterceptor)
     root() {}
-
-    // @Get('*.*')
-    // @UseInterceptors(StaticFileInterceptor)
-    // page() {}
 }

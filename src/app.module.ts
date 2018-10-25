@@ -13,11 +13,11 @@ import { AngularUniversalModule, applyDomino } from '@nestjs/ng-universal';
 import { join } from 'path';
 import * as domino from 'domino';
 
-const ssrPath = join(process.cwd(), 'dist');
+const BROWSER_DIR = join(process.cwd(), 'dist/browser');
 
+// applyDomino 这个方法上没有加navigator, 这里手动加上
 (function patchWindow() {
-    // 这个方法上没有加navigator
-    const tpl = join(ssrPath, 'browser', 'index.html');
+    const tpl = join(BROWSER_DIR, 'index.html');
     const win = domino.createWindow(tpl);
 
     global['navigator'] = win.navigator;
@@ -36,8 +36,9 @@ const ssrPath = join(process.cwd(), 'dist');
         AuthModule,
         UploadModule,
         AngularUniversalModule.forRoot({
-            viewsPath: join(ssrPath, 'browser'),
-            bundle: require(ssrPath + '/browser/main'),
+            viewsPath: BROWSER_DIR,
+            bundle: require('./../dist/server/main.js'),
+            extraProviders: [],
         }),
     ],
     controllers: [AppController],
