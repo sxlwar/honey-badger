@@ -12,6 +12,7 @@ import { UploadModule } from './upload/upload.module';
 import { AngularUniversalModule, applyDomino } from '@nestjs/ng-universal';
 import { join } from 'path';
 import * as domino from 'domino';
+import { enableProdMode } from '@angular/core';
 
 const BROWSER_DIR = join(process.cwd(), 'dist/browser');
 
@@ -24,6 +25,8 @@ const BROWSER_DIR = join(process.cwd(), 'dist/browser');
 
     applyDomino(global, tpl);
 })();
+
+enableProdMode();
 
 @Module({
     imports: [
@@ -38,7 +41,6 @@ const BROWSER_DIR = join(process.cwd(), 'dist/browser');
         AngularUniversalModule.forRoot({
             viewsPath: BROWSER_DIR,
             bundle: require('./../dist/server/main.js'),
-            extraProviders: [],
         }),
     ],
     controllers: [AppController],
