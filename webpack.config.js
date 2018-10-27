@@ -21,7 +21,7 @@ module.exports = {
             },
         ],
     },
-    mode: 'production',
+    mode: 'development',
     resolve: {
         extensions: ['.tsx', '.ts', '.js'],
     },
