@@ -1,6 +1,6 @@
 import { HttpService, Inject, Injectable } from '@nestjs/common';
 
-import { ArticleEntity } from 'article/entity/article.entity';
+import { ArticleEntity } from '../../article/entity/article.entity';
 import { uniq } from 'lodash';
 import { from, Observable } from 'rxjs';
 import { mergeMap, mapTo } from 'rxjs/operators';
