@@ -14,7 +14,7 @@ import { join } from 'path';
 import * as domino from 'domino';
 import { enableProdMode } from '@angular/core';
 
-const BROWSER_DIR = join(process.cwd(), 'dist/browser');
+const BROWSER_DIR = join(process.cwd(), 'web/browser');
 
 // applyDomino 这个方法上没有加navigator, 这里手动加上
 (function patchWindow() {
@@ -40,7 +40,7 @@ enableProdMode();
         UploadModule,
         AngularUniversalModule.forRoot({
             viewsPath: BROWSER_DIR,
-            bundle: require('./../dist/server/main.js'),
+            bundle: require('./../web/server/main.js'),
         }),
     ],
     controllers: [AppController],
