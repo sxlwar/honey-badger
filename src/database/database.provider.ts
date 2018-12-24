@@ -2,7 +2,7 @@ import { createConnection } from 'typeorm';
 
 import { RepositoryToken } from '../shared/config/config.enum';
 
-const isDev = process.env.NODE_ENV === 'development';
+const isDev = process.env.NODE_ENV !== 'production';
 
 export const databaseProviders = [
     {

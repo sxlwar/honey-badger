@@ -5,5 +5,5 @@
     "IS_PRODUCTION": false,
     "HOST": "localhost",
     "PORT": 3000,
-    "IS_TEST": false
+    "IS_TEST": true
 }

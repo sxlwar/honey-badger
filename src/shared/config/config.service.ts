@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import { get } from 'config';
-import { GithubAuth, GithubAuthTest } from './config.enum';
+import { GithubAuth, GithubAuthTest, GithubAuthDev } from './config.enum';
 import * as dotenv from 'dotenv';
 import * as fs from 'fs';
 import * as Joi from 'joi';
@@ -39,6 +39,7 @@ export class ConfigService {
             DATABASE_USER: Joi.string(),
             DATABASE_PASSWORD: Joi.string(),
             HOST: Joi.string(),
+            IS_TEST: Joi.boolean(),
         });
 
         const { error, value: validatedEnvConfig } = Joi.validate(envConfig, envVarsSchema);
@@ -63,6 +64,10 @@ export class ConfigService {
     }
 
     get authConfig(): GithubAuthConfig {
-        return this.isDevelopment ? GithubAuthTest : GithubAuth;
+        if (this.isDevelopment) {
+            return this.envConfig.IS_TEST ? GithubAuthTest : GithubAuthDev;
+        } else {
+            return GithubAuth;
+        }
     }
 }

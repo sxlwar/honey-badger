@@ -22,6 +22,12 @@ export enum GithubAuth {
 export enum GithubAuthTest {
     clientId = 'd9cd51d2ac0a7386eb8e',
     clientSecret = '2d8b184a7e59a45131fbdddd1358c49cffd7f86a',
+    redirect = 'http://localhost:3000',
+}
+
+export enum GithubAuthDev {
+    clientId = '3eafb3aec84747984908',
+    clientSecret = 'a7ed4cb9567a898b1a413355087a4f82ddebf7dc',
     redirect = 'http://localhost:4200',
 }
 
