@@ -9,6 +9,7 @@ export interface ArticleOverview {
     summary: string;
     statistics: ArticleStatistics;
     avatar: string;
+    isPublished: boolean;
 }
 
 export interface Article extends ArticleOverview {

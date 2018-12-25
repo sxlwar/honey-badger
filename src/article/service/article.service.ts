@@ -4,7 +4,7 @@ import { intersection, orderBy } from 'lodash';
 import * as moment from 'moment';
 import { from, Observable } from 'rxjs';
 import { filter, map, mergeMap, reduce } from 'rxjs/operators';
-import { Repository } from 'typeorm';
+import { Repository, FindConditions } from 'typeorm';
 
 import { RepositoryToken } from '../../shared/config/config.enum';
 import { ConfigService } from '../../shared/config/config.service';
@@ -32,21 +32,24 @@ export class ArticleService {
      * !不知道SQl怎么写，用了下RX；
      */
     findArticles(arg: Partial<ArticleSearchDto>): Observable<ArticleEntity[] | ArticleOverview[]> {
-        const { offset, limit, author, title, category, isOverview, rank } = arg;
+        const { offset, limit, author, title, category, isOverview, rank, allState = false, userId } = arg;
+        const conditionBase = {
+            order: { createdAt: 'DESC' },
+            take: limit || 1000,
+            skip: offset || 0,
+            relations: ['statistics', 'user'],
+            where: { isDeleted: false },
+        } as FindConditions<ArticleEntity>;
+        const condition = allState
+            ? conditionBase
+            : ({ ...conditionBase, where: { isPublished: true, isDeleted: false } } as FindConditions<ArticleEntity>);
 
-        return from(
-            this.articleRepository.find({
-                order: { createdAt: 'DESC' },
-                take: limit || 1000,
-                skip: offset || 0,
-                where: { isPublished: true },
-                relations: ['statistics', 'user'],
-            }),
-        ).pipe(
+        return from(this.articleRepository.find(condition)).pipe(
             mergeMap(list =>
                 from(list).pipe(
                     filter(article => (author ? article.author.includes(author) : true)),
                     filter(article => (title ? article.title.includes(title) : true)),
+                    filter(article => (userId ? article.userId === userId : true)),
                     filter(article => (category ? !!intersection(category, article.category).length : true)),
                     reduce((acc: ArticleEntity[], cur: ArticleEntity) => [...acc, cur], []),
                     map(articles => (isOverview ? articles.map(item => this.getOverview(item)) : articles)),
@@ -72,7 +75,7 @@ export class ArticleService {
     }
 
     private getOverview(article: ArticleEntity): ArticleOverview {
-        const { id, createdAt, title, category, author, content, statistics, user } = article;
+        const { id, createdAt, title, category, author, content, statistics, user, isPublished } = article;
         const contentExceptImage = content.replace(/\!\[[\w\.\-\_]*\]\(.*\)/g, '');
 
         return {
@@ -84,6 +87,7 @@ export class ArticleService {
             summary: contentExceptImage.slice(0, 100),
             category: Array.isArray(category) ? category : JSON.parse(category),
             avatar: user.avatar,
+            isPublished,
         };
     }
 
@@ -123,10 +127,11 @@ export class ArticleService {
     }
 
     async updateArticle(data: ArticleUpdateDto): Promise<ArticleUpdateResult> {
-        const { id, content } = data;
+        const { id, content, isPublish = true } = data;
+        const state = { isPublished: isPublish, updatedAt: moment().format(this.configService.dateFormat) };
 
         return this.articleRepository
-            .update(id, { content, updatedAt: moment().format(this.configService.dateFormat) })
+            .update(id, !!content ? { ...state, content} : state)
             .then(res => ({ isUpdated: !!res }));
     }
 

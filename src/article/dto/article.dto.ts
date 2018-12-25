@@ -34,8 +34,11 @@ export class ArticleUpdateDto {
     @ApiModelProperty()
     readonly id: number;
 
-    @ApiModelProperty()
+    @ApiModelPropertyOptional()
     readonly content: string;
+
+    @ApiModelPropertyOptional()
+    readonly isPublish: true;
 }
 
 @ApiUseTags(ARTICLE)
@@ -48,6 +51,9 @@ export class ArticleDeleteDto {
 export class ArticleSearchDto {
     @ApiModelPropertyOptional()
     readonly author: string;
+
+    @ApiModelPropertyOptional()
+    readonly userId: number;
 
     @ApiModelPropertyOptional()
     readonly title: string;
@@ -66,6 +72,9 @@ export class ArticleSearchDto {
 
     @ApiModelPropertyOptional()
     readonly rank: 'enjoy' | 'view' | 'stored';
+
+    @ApiModelPropertyOptional()
+    readonly allState: boolean; // 文章的状态，是否已经发表
 }
 
 @ApiUseTags(ARTICLE)
