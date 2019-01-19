@@ -10,6 +10,7 @@ export interface ArticleOverview {
     statistics: ArticleStatistics;
     avatar: string;
     isPublished: boolean;
+    thumbnail: string;
 }
 
 export interface Article extends ArticleOverview {

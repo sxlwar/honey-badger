@@ -12,7 +12,7 @@
 
 > npm run start:dev 项目将运行在development环境下，此时的github验证将会重定向到 http://localhost:4200 下，日常开发时将使用此环境
 
-> npm run start:test 项目将运行在test环境下，此时的github验证将会重定向到 http://localhost:3000 下，开发完成后进行本地测试时使用些环境
+> npm run start:test 项目将运行在test环境下，此时的github验证将会重定向到 http://localhost:3000 下，开发完成后进行本地测试时使用此环境
 
 ## api test
 

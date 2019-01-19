@@ -58,4 +58,7 @@ export class ArticleEntity {
 
     @ManyToOne(_type => UserEntity, user => user.articles, { cascade: true })
     user: UserEntity;
+
+    @Column()
+    thumbnail: string;
 }

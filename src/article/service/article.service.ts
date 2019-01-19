@@ -75,7 +75,7 @@ export class ArticleService {
     }
 
     private getOverview(article: ArticleEntity): ArticleOverview {
-        const { id, createdAt, title, category, author, content, statistics, user, isPublished } = article;
+        const { id, createdAt, title, category, author, content, statistics, user, isPublished, thumbnail } = article;
         const contentExceptImage = content.replace(/\!\[[\w\.\-\_]*\]\(.*\)/g, '');
 
         return {
@@ -88,6 +88,7 @@ export class ArticleService {
             category: Array.isArray(category) ? category : JSON.parse(category),
             avatar: user.avatar,
             isPublished,
+            thumbnail,
         };
     }
 

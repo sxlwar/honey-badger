@@ -27,6 +27,9 @@ export class ArticleDto {
 
     @ApiModelProperty()
     readonly userId: number;
+
+    @ApiModelProperty()
+    readonly thumbnail: string;
 }
 
 @ApiUseTags(ARTICLE)
