@@ -13,7 +13,7 @@ export const databaseProviders = [
                 host: 'localhost',
                 port: 3306,
                 username: 'root',
-                password: isDev ? 'ratel' : 'honey_badger',
+                password: 'honey_badger',
                 database: isDev ? 'test' : 'honey_badger',
                 entities: [__dirname + '/../**/*.entity{.ts,.js}'],
                 synchronize: true,
