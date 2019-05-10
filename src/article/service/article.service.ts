@@ -53,11 +53,8 @@ export class ArticleService {
                     filter(article => (category ? !!intersection(category, article.category).length : true)),
                     reduce((acc: ArticleEntity[], cur: ArticleEntity) => [...acc, cur], []),
                     map(articles => (isOverview ? articles.map(item => this.getOverview(item)) : articles)),
-                    map(
-                        articles =>
-                            rank
-                                ? (orderBy(articles, [`statistics.${rank}`], ['desc']) as ArticleOverview[])
-                                : articles,
+                    map(articles =>
+                        rank ? (orderBy(articles, [`statistics.${rank}`], ['desc']) as ArticleOverview[]) : articles,
                     ),
                 ),
             ),
@@ -88,8 +85,22 @@ export class ArticleService {
             category: Array.isArray(category) ? category : JSON.parse(category),
             avatar: user.avatar,
             isPublished,
-            thumbnail,
+            thumbnail: this.forceHttps(thumbnail),
         };
+    }
+
+    private forceHttps(str: string, reg = /http:/, replaceStr = 'https:'): string {
+        if (reg.test(str)) {
+            let res = str;
+
+            while (reg.exec(res)) {
+                res = res.replace(reg, replaceStr);
+            }
+
+            return res;
+        } else {
+            return str;
+        }
     }
 
     /**
@@ -99,11 +110,18 @@ export class ArticleService {
      */
     async findArticleById(articleId: number): Promise<ArticleEntity> {
         const result = await this.articleRepository.findOne({ id: articleId }, { relations: ['statistics'] });
+
+        let { content, thumbnail } = result;
+
+        thumbnail = this.forceHttps(thumbnail);
+
+        content = this.forceHttps(content, /\]\(http:/, '](https:');
+
         const { id } = result.statistics;
 
         this.statisticsRepository.increment({ id }, 'view', 1);
 
-        return result;
+        return { ...result, thumbnail, content };
     }
 
     /**
@@ -132,7 +150,7 @@ export class ArticleService {
         const state = { isPublished: isPublish, updatedAt: moment().format(this.configService.dateFormat) };
 
         return this.articleRepository
-            .update(id, !!content ? { ...state, content} : state)
+            .update(id, !!content ? { ...state, content } : state)
             .then(res => ({ isUpdated: !!res }));
     }
 
