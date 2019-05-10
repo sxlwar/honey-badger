@@ -1,9 +1,9 @@
-import { HttpService, Inject, Injectable } from '@nestjs/common';
+import { HttpService, Inject, Injectable, HttpException, BadRequestException } from '@nestjs/common';
 
 import { ArticleEntity } from '../../article/entity/article.entity';
 import { uniq } from 'lodash';
-import { from, Observable } from 'rxjs';
-import { mergeMap, mapTo } from 'rxjs/operators';
+import { from, Observable, of, throwError } from 'rxjs';
+import { mergeMap, mapTo, catchError } from 'rxjs/operators';
 import { In, Repository } from 'typeorm';
 import * as uuid from 'uuid/v4';
 
@@ -87,6 +87,10 @@ export class AuthService {
                         }
                     }),
                 );
+            }),
+            catchError(err => {
+                console.log(err.message);
+                return throwError(new HttpException(err.message, err.response.status));
             }),
         );
     }
