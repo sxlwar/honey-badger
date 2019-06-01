@@ -89,8 +89,8 @@ export class AuthService {
                 );
             }),
             catchError(err => {
-                console.log(err.message);
-                return throwError(new HttpException(err.message, err.response.status));
+                console.error(err);
+                return throwError(new HttpException(err.message, 500));
             }),
         );
     }
