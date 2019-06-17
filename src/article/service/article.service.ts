@@ -2,8 +2,8 @@ import { Inject, Injectable } from '@nestjs/common';
 
 import { intersection, orderBy } from 'lodash';
 import * as moment from 'moment';
-import { from, Observable } from 'rxjs';
-import { filter, map, mergeMap, reduce } from 'rxjs/operators';
+import { from, Observable, timer } from 'rxjs';
+import { filter, map, mergeMap, reduce, tap, delay, switchMapTo } from 'rxjs/operators';
 import { Repository, FindConditions } from 'typeorm';
 
 import { RepositoryToken } from '../../shared/config/config.enum';
@@ -21,15 +21,21 @@ import {
 
 @Injectable()
 export class ArticleService {
+    private notificationPendingList: number[];
+
+    private sendNotification$: Observable<number>;
+
     constructor(
         @Inject(RepositoryToken.ArticleRepositoryToken) private readonly articleRepository: Repository<ArticleEntity>,
         @Inject(RepositoryToken.ArticleStatisticsRepositoryToken)
         private readonly statisticsRepository: Repository<ArticleStatisticsEntity>,
         private readonly configService: ConfigService,
-    ) {}
+    ) {
+        this.initPendingList();
+    }
 
     /**
-     * !不知道SQl怎么写，用了下RX；
+     * ! How to implement with SQL?
      */
     findArticles(arg: Partial<ArticleSearchDto>): Observable<ArticleEntity[] | ArticleOverview[]> {
         const { offset, limit, author, title, category, isOverview, rank, allState = false, userId } = arg;
@@ -62,7 +68,7 @@ export class ArticleService {
     }
 
     /**
-     * ! 用sql怎么查？
+     * ! How to implement with SQL?
      */
     getSeriesOverview(data: ArticleSeriesDto): Observable<ArticleSeriesOverview> {
         return from(this.articleRepository.find({ where: { isPublished: true } })).pipe(
@@ -104,9 +110,9 @@ export class ArticleService {
     }
 
     /**
-     * 通过id查找指定的文章，返回的结果包括此文章的统计字段；
-     * 递增文章被查询的次数。递增操作在查询操作之后，因此返回结果的查看次数比实际结果小 1
-     * @param articleId 文章id
+     * Find then specified article by id. Result includes the statistics of the article.
+     * Increase querying amount of the article, the increment operation is after the querying operation,
+     * so the amount is less than actual result 1.
      */
     async findArticleById(articleId: number): Promise<ArticleEntity> {
         const result = await this.articleRepository.findOne({ id: articleId }, { relations: ['statistics'] });
@@ -125,13 +131,13 @@ export class ArticleService {
     }
 
     /**
-     * 保存文章并且初始化统计信息
-     * @param data 前端传入的文章信息
-     * @returns 文章的id
+     * Save the article and initialize the statistics
+     * @param data Article info passed by frontend.
+     * @returns article id
      */
     createArticle(data: ArticleDto): Observable<number> {
         const statistics = this.statisticsRepository.create();
-        const { category, content, title, subtitle, author } = data;
+        const { category, title, subtitle, author } = data;
         const article = this.articleRepository.create({
             ...data,
             title: title.trim(),
@@ -142,7 +148,10 @@ export class ArticleService {
             statistics,
         });
 
-        return from(this.articleRepository.save(article)).pipe(map(result => result.id));
+        return from(this.articleRepository.save(article)).pipe(
+            map(result => result.id),
+            tap(id => this.addToPendingList(id)),
+        );
     }
 
     async updateArticle(data: ArticleUpdateDto): Promise<ArticleUpdateResult> {
@@ -177,5 +186,41 @@ export class ArticleService {
         }
 
         return this.statisticsRepository.save(statistics);
+    }
+
+    // ================================================Article notification==================================================
+
+    private initPendingList(): void {
+        const startDay = moment()
+            .add(1, 'day')
+            .format(this.configService.dateFormat);
+
+        // Send notifications every morning at 8am;
+        this.sendNotification$ = timer(new Date(startDay + ' 08:00:00'), 24 * 60 * 60 * 1000);
+        this.notificationPendingList = [];
+
+        this.resetPendingList();
+    }
+
+    private addToPendingList(id: number): void {
+        this.notificationPendingList.push(id);
+    }
+
+    private resetPendingList(): void {
+        this.sendNotification$.pipe(delay(10 * 60 * 1000)).subscribe(_ => (this.notificationPendingList = []));
+    }
+
+    getPendingArticles(): Observable<ArticleOverview[]> {
+        // Because of email template can display at most 3 overviews.
+        const ids =
+            this.notificationPendingList.length > 3
+                ? this.notificationPendingList.slice(-3)
+                : this.notificationPendingList;
+        const articles = from(ids.length > 0 ? this.articleRepository.findByIds(ids) : []).pipe(
+            filter(articles => !!articles.length),
+            map(articles => articles.map(item => this.getOverview(item))),
+        );
+
+        return this.sendNotification$.pipe(switchMapTo(articles));
     }
 }

@@ -1,3 +1,3 @@
 export abstract class MessageService {
-    abstract getHttpExceptionMessage(httpStatus: number, path: string): string;
+    abstract getHttpExceptionMessage(httpStatus: number, path: string, extra?: any): string;
 }

@@ -40,6 +40,7 @@ export class ConfigService {
             DATABASE_PASSWORD: Joi.string(),
             HOST: Joi.string(),
             IS_TEST: Joi.boolean(),
+            SENGGRID_API_KEY: Joi.string(),
         });
 
         const { error, value: validatedEnvConfig } = Joi.validate(envConfig, envVarsSchema);
@@ -59,15 +60,43 @@ export class ConfigService {
         return this.envConfig[name] || get(name);
     }
 
-    get isDevelopment(): boolean {
+    /**
+     * Not production evn
+     */
+    get notProd(): boolean {
         return !Boolean(this.envConfig.IS_PRODUCTION);
     }
 
+    /**
+     * Is test env
+     */
+    get isTest(): boolean {
+        return Boolean(this.envConfig.IS_TEST);
+    }
+
+    /**
+     * Is production env
+     */
+    get isProd(): boolean {
+        return Boolean(this.envConfig.IS_PRODUCTION);
+    }
+
+    /**
+     * Is development env
+     */
+    get isDev(): boolean {
+        return !this.isProd && !this.isTest;
+    } 
+
     get authConfig(): GithubAuthConfig {
-        if (this.isDevelopment) {
+        if (this.notProd) {
             return this.envConfig.IS_TEST ? GithubAuthTest : GithubAuthDev;
         } else {
             return GithubAuth;
         }
+    }
+
+    get sendgridApiKey(): string {
+        return this.envConfig.SENGGRID_API_KEY;
     }
 }

@@ -14,5 +14,6 @@ import { StatisticsMessageService } from './service/article.statistics.message.s
     controllers: [ArticleController, ArticleStatisticsController],
     imports: [DatabaseModule, SharedModule],
     providers: [ArticleService, ArticleMessageService, StatisticsMessageService, ...articleProviders],
+    exports: [ArticleService]
 })
 export class ArticleModule {}

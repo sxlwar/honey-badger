@@ -1,6 +1,6 @@
 {
     "DATABASE_USER": "root",
-    "DATABASE_PASSWORD": "ratel",
+    "DATABASE_PASSWORD": "honey_badger",
     "DATABASE": "test",
     "IS_PRODUCTION": false,
     "HOST": "localhost",

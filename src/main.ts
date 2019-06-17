@@ -11,7 +11,7 @@ declare const module: any;
 async function bootstrap() {
     const isDev = process.env.NODE_ENV === Env.development;
     const app = await NestFactory.create(AppModule, { cors: isDev || ['hijavascript.com'] });
-    const hostDomain = AppModule.isDev ? `${AppModule.host}:${AppModule.port.toString()}` : AppModule.host;
+    const hostDomain = AppModule.notProd ? `${AppModule.host}:${AppModule.port.toString()}` : AppModule.host;
 
     // Help secure app by setting various HTTP headers;
     app.use(helmet());
@@ -31,7 +31,7 @@ async function bootstrap() {
 
     await app.listen(AppModule.port);
 
-    if (module.hot && AppModule.isDev) {
+    if (module.hot && AppModule.notProd) {
         module.hot.accept();
         module.hot.dispose(() => app.close());
     }

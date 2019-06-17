@@ -1,4 +1,9 @@
+import { enableProdMode } from '@angular/core';
 import { HttpModule, Module } from '@nestjs/common';
+import { AngularUniversalModule, applyDomino } from '@nestjs/ng-universal';
+
+import * as domino from 'domino';
+import { join } from 'path';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -8,11 +13,8 @@ import { CommentModule } from './comment/comment.module';
 import { ConfigVar } from './shared/config/config.enum';
 import { ConfigService } from './shared/config/config.service';
 import { SharedModule } from './shared/shared.module';
+import { SubscriptionModule } from './subscription/subscription.module';
 import { UploadModule } from './upload/upload.module';
-import { AngularUniversalModule, applyDomino } from '@nestjs/ng-universal';
-import { join } from 'path';
-import * as domino from 'domino';
-import { enableProdMode } from '@angular/core';
 
 const BROWSER_DIR = join(process.cwd(), 'web/browser');
 
@@ -38,6 +40,7 @@ enableProdMode();
         CommentModule,
         AuthModule,
         UploadModule,
+        SubscriptionModule,
         AngularUniversalModule.forRoot({
             viewsPath: BROWSER_DIR,
             bundle: require('./../web/server/main.js'),
@@ -53,7 +56,7 @@ export class AppModule {
      */
     public static port: number | string;
     public static host: string;
-    public static isDev: boolean;
+    public static notProd: boolean;
     public static database: string;
     public static databasePwd: string;
 
@@ -64,7 +67,7 @@ export class AppModule {
     private initialConfigValue() {
         AppModule.port = AppModule.normalizePort(this._configService.getConfigVariable(ConfigVar.PORT));
         AppModule.host = this._configService.getConfigVariable(ConfigVar.HOST);
-        AppModule.isDev = this._configService.isDevelopment;
+        AppModule.notProd = this._configService.notProd;
         AppModule.database = this._configService.get('DATABASE');
         AppModule.databasePwd = this._configService.get('DATABASE_PASSWORD');
     }

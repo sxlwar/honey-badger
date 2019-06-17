@@ -11,6 +11,7 @@ export enum RepositoryToken {
     CommentRepositoryToken = 'CommentRepositoryToken',
     CommentReplyRepositoryToken = 'CommentReplyRepositoryToken',
     AuthRepositoryToken = 'AuthRepositoryToken',
+    SubscriptionToken = 'SubscriptionToken',
 }
 
 export enum GithubAuth {

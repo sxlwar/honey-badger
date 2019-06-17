@@ -3,7 +3,7 @@
     "host": "localhost",
     "port": 3306,
     "username": "root",
-    "password": "ratel",
+    "password": "honey_badger",
     "database": "test",
     "entities": ["src/**/**.entity{.ts,.js}"],
     "synchronize": true,
