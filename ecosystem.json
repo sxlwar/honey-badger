@@ -16,7 +16,7 @@
             "user": "yang",
             "host": ["hijavascript.com"],
             "port": "22",
-            "ref": "origin/master",
+            "ref": "public/master",
             "repo": "git@github.com:sxlwar/honey-badger.git",
             "path": "/www",
             "ssh_options": "StrictHostKeyChecking=no",
