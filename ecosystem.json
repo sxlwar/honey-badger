@@ -16,7 +16,7 @@
             "user": "root",
             "host": ["chtoma.com"],
             "port": "22",
-            "ref": "public/master",
+            "ref": "origin/master",
             "repo": "git@github.com:sxlwar/honey-badger.git",
             "path": "/blog",
             "ssh_options": "StrictHostKeyChecking=no",
