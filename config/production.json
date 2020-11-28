@@ -3,7 +3,7 @@
     "DATABASE_PASSWORD": "honey_badger",
     "DATABASE": "honey_badger",
     "IS_PRODUCTION": true,
-    "HOST": "www.hijavascript.com",
+    "HOST": "blog.chtoma.com",
     "PORT": 3000,
     "IS_TEST": false
 }

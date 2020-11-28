@@ -17,7 +17,7 @@ export enum RepositoryToken {
 export enum GithubAuth {
     clientId = '54a9e9e065ccb8f11871',
     clientSecret = 'a1b780ca64f823fda42ea01d3e037672a61039fd',
-    redirect = 'https://www.hijavascript.com',
+    redirect = 'https://blog.chtoma.com',
 }
 
 export enum GithubAuthTest {
@@ -32,6 +32,9 @@ export enum GithubAuthDev {
     redirect = 'http://localhost:4200',
 }
 
+/**
+ * Update token below if domain changed;
+ */
 export enum QiniuToken {
     accessKey = 'Y7KtC0UrXL6JB1MaH1Z3VaVLgK-7XJEHkhWCC4xx',
     secretKey = '80nRC4OM7yANxQhp8iC722C7ybCyTuluzMXKxUnb',
