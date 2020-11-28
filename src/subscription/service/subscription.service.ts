@@ -1,16 +1,16 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { send, setApiKey } from '@sendgrid/mail';
-
 import * as moment from 'moment';
 import { from, Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { Repository } from 'typeorm';
-
 import { Category } from '../../article/interface/article.interface';
 import { ArticleService } from '../../article/service/article.service';
 import { RepositoryToken } from '../../shared/config/config.enum';
 import { ConfigService } from '../../shared/config/config.service';
 import { SubscriptionEntity } from '../entity/subscription.entity';
+
+
 
 interface DynamicContent {
     href: string;
@@ -23,7 +23,7 @@ interface DynamicContent {
 export class SubscribeService {
     private readonly templateId = 'd-4c2338f502da47c2a18712a2c67851f1';
 
-    private prodAddress = 'https://www.hijavascript.com';
+    private prodAddress = 'https://blog.chtoma.com';
     private clientAddress = 'http://localhost:4200';
     private serverAddress = 'http://localhost:3000';
 

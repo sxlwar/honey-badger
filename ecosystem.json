@@ -13,14 +13,14 @@
     ],
     "deploy": {
         "production": {
-            "user": "yang",
-            "host": ["hijavascript.com"],
+            "user": "root",
+            "host": ["chtoma.com"],
             "port": "22",
             "ref": "public/master",
             "repo": "git@github.com:sxlwar/honey-badger.git",
-            "path": "/www",
+            "path": "/blog",
             "ssh_options": "StrictHostKeyChecking=no",
-            "post-deploy": "pm2 reload ecosystem.json --env production && npm run prestart:prod",
+            "post-deploy": "npm install && pm2 reload ecosystem.json --env production && npm run prestart:prod",
             "env": {
                 "NODE_ENV": "production"
             }

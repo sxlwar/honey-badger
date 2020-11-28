@@ -17,7 +17,7 @@ export enum RepositoryToken {
 export enum GithubAuth {
     clientId = '54a9e9e065ccb8f11871',
     clientSecret = 'a1b780ca64f823fda42ea01d3e037672a61039fd',
-    redirect = 'https://www.hijavascript.com',
+    redirect = 'https://blog.chtoma.com',
 }
 
 export enum GithubAuthTest {
