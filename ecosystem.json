@@ -2,7 +2,7 @@
     "apps": [
         {
             "name": "honey-badger",
-            "script": "dist/main.js",
+            "script": "main.js",
             "env": {
                 "COMMON_VARIABLE": "true"
             },
@@ -11,6 +11,7 @@
             }
         }
     ],
+    "cwd": "./dist",
     "deploy": {
         "production": {
             "user": "root",
